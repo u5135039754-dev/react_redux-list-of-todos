@@ -1,46 +1,20 @@
 import React from 'react';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { setQuery, setStatus } from '../../features/filter';
 
-type Props = {
-  setActiveTodo: React.Dispatch<React.SetStateAction<boolean>>;
-  setCompletedTodo: React.Dispatch<React.SetStateAction<boolean>>;
-  query: string;
-  setQuery: React.Dispatch<React.SetStateAction<string>>;
-};
-
-export const TodoFilter: React.FC<Props> = ({
-  setActiveTodo,
-  setCompletedTodo,
-  query,
-  setQuery,
-}) => {
-  const [status, setStatus] = React.useState('all');
+export const TodoFilter: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const query = useAppSelector(state => state.filter.query);
+  const status = useAppSelector(state => state.filter.status);
 
   const statusHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
+    const value = event.target.value as 'all' | 'active' | 'completed';
 
-    setStatus(value);
-
-    if (value === 'active') {
-      setActiveTodo(true);
-      setCompletedTodo(false);
-
-      return;
-    }
-
-    if (value === 'completed') {
-      setCompletedTodo(true);
-      setActiveTodo(false);
-
-      return;
-    }
-
-    // 'all' or any other value
-    setActiveTodo(false);
-    setCompletedTodo(false);
+    dispatch(setStatus(value));
   };
 
   const clearSearchHandler = () => {
-    setQuery('');
+    dispatch(setQuery(''));
   };
 
   return (
@@ -69,7 +43,7 @@ export const TodoFilter: React.FC<Props> = ({
           className="input"
           placeholder="Search..."
           value={query}
-          onChange={e => setQuery(e.target.value)}
+          onChange={e => dispatch(setQuery(e.target.value))}
         />
         <span className="icon is-left">
           <i className="fas fa-magnifying-glass" />

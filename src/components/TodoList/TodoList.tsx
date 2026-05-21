@@ -1,35 +1,26 @@
 /* eslint-disable */
-import { getTodos } from '../../api';
 import React, { useEffect } from 'react';
 import { Todo } from '../../types/Todo';
 import { setCurrentTodo } from '../../features/currentTodo';
-import { useAppSelector } from '../../app/hooks';
-import { useDispatch } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
 
 type Props = {
   inUse: boolean;
   setInUse: React.Dispatch<React.SetStateAction<boolean>>;
   todoModalUse: boolean;
   todos?: Todo[];
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
   setTodoModalUse: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const TodoList: React.FC<Props> = ({ todoModalUse, setInUse, setTodoModalUse, todos, setTodos }) => {
+export const TodoList: React.FC<Props> = ({ todoModalUse, setInUse, setTodoModalUse, todos }) => {
   const noTodos = !todos?.length;
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const currentTodo = useAppSelector(state => state.currentTodo);
 
   const handleEyeClick = (todo: Todo) => {
     dispatch(setCurrentTodo(todo));
     setInUse(true);
   };
-
-  useEffect(() => {
-    getTodos().then(todos => {
-      setTodos(todos);
-    });
-  }, []);
 
   useEffect(() => {
     setInUse(true);
